@@ -11,28 +11,11 @@ final class ViewController: UIViewController {
 
   private lazy var scrollView: UIScrollView = {
     let scrollView = UIScrollView()
+    scrollView.contentSize = CGSize(width: UIScreen.main.bounds.size.width , height: UIScreen.main.bounds.size.height * 2)
     scrollView.translatesAutoresizingMaskIntoConstraints = false
-
     return scrollView
   }()
-
-  private lazy var headerView: UIView = {
-    let headerView = UIView()
-    headerView.translatesAutoresizingMaskIntoConstraints = false
-    headerView.backgroundColor = .white
-    return headerView
-  }()
-
-  private lazy var titleLabel: UILabel = {
-    let title = UILabel()
-    title.translatesAutoresizingMaskIntoConstraints = false
-    title.textColor = .black
-    title.font = .systemFont(ofSize: 30, weight: .bold)
-    title.text = "Avatar"
-    return title
-  }()
-
-  private lazy var avatarImageView: UIImageView = {
+  private lazy var imageView: UIImageView = {
     let avatarImageView = UIImageView()
     avatarImageView.translatesAutoresizingMaskIntoConstraints = false
     avatarImageView.image = UIImage(systemName: "person.crop.circle.fill")
@@ -41,108 +24,48 @@ final class ViewController: UIViewController {
     return avatarImageView
   }()
 
-  private lazy var navBar = UINavigationBar(frame: CGRect(x: 0,
-                                                          y: 100,
-                                                          width: UIScreen.main.bounds.size.width, height: 90))
-
   override func viewDidLoad() {
     super.viewDidLoad()
+    view.backgroundColor = .white
 
     view.addSubview(scrollView)
-    view.addSubview(navBar)
-    scrollView.addSubview(headerView)
-    scrollView.delegate = self
 
-    let center = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 90))
-    center.text = "Avatar"
-    center.font = UIFont.systemFont(ofSize: 21, weight: .bold)
-    center.textAlignment = .center
-//    navigationItem.titleView = center
-
-
-    let navItem = UINavigationItem()
-    navItem.titleView = center
-
-//    navItem.prompt = ""
-
-    navItem.style = .
-
-
-
-
-
-    //    navBar.topItem?.title = "Avatar"
-
-    navBar.items = [navItem]
-
-    //    navBar.titleTextAttributes
-
-    //    navBar.topItem?.title = "Avatar"
-
-    //    let navigationItem = UINavigationItem()
-    //    navigationItem.titleView = UILabel().text = "Avatar"
-    //    // Устанавливаем topItem через метод push
-    //    navBar.topItem = navigationItem.titleView.
-
-    navBar.isHidden = true
-
-    headerView.addSubview(titleLabel)
-    headerView.addSubview(avatarImageView)
+    title = "Avatar"
+    guard let navigationBar = navigationController?.navigationBar else { return }
+    navigationBar.prefersLargeTitles = true
 
     NSLayoutConstraint.activate([
-      scrollView.topAnchor.constraint(equalTo: navBar.bottomAnchor),
+      scrollView.topAnchor.constraint(equalTo: view.topAnchor),
       scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-      scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-      headerView.heightAnchor.constraint(equalToConstant: 100), // change to 1000 and delete content
-      headerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-      headerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-      headerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-      headerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-      //      headerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor) //uncomment when change to 1000
-
-      titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-      //      titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 16),
-      titleLabel.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
-
-      avatarImageView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-      avatarImageView.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 0),
-      avatarImageView.heightAnchor.constraint(equalToConstant: 50),
-      avatarImageView.widthAnchor.constraint(equalToConstant: 50)
+      scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
     ])
 
-    addContentViews()
   }
 
-  private func addContentViews() {
-    let contentView = UIView()
-    contentView.translatesAutoresizingMaskIntoConstraints = false
-    contentView.backgroundColor = .white
-    scrollView.addSubview(contentView)
+  override func viewDidLayoutSubviews() {
+    guard let navigationBar = navigationController?.navigationBar else { return }
+    guard let UINavigationBarLargeTitleView = NSClassFromString("_UINavigationBarLargeTitleView") else { return }
 
-    NSLayoutConstraint.activate([
-      contentView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
-      contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-      contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-      contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-      contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-      contentView.heightAnchor.constraint(equalToConstant: 1000)
-    ])
-  }
-}
+    navigationBar.subviews.forEach { subview in
+                    if subview.isKind(of: UINavigationBarLargeTitleView.self) {
 
-extension ViewController: UIScrollViewDelegate {
+                      subview.addSubview(imageView)
 
-  func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let offset = scrollView.contentOffset.y
-    if offset > 0 {
-      navBar.isHidden = false
-      navBar.barStyle = UIBarStyle.default
-    } else {
-      navBar.isHidden = true
+                        NSLayoutConstraint.activate([
+                          imageView.bottomAnchor.constraint(
+                                equalTo: subview.bottomAnchor,
+                                constant: -15
+                            ),
+                          imageView.trailingAnchor.constraint(
+                                equalTo: subview.trailingAnchor,
+                                constant: -view.directionalLayoutMargins.trailing
+                            ),
+                          imageView.widthAnchor.constraint(equalToConstant: 36),
+                          imageView.heightAnchor.constraint(equalToConstant: 36)
+                        ])
+                    }
+                }
 
-    }
   }
 }
-
