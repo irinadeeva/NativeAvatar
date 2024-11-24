@@ -15,6 +15,7 @@ final class ViewController: UIViewController {
     scrollView.translatesAutoresizingMaskIntoConstraints = false
     return scrollView
   }()
+
   private lazy var imageView: UIImageView = {
     let avatarImageView = UIImageView()
     avatarImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -29,7 +30,6 @@ final class ViewController: UIViewController {
     view.backgroundColor = .white
 
     view.addSubview(scrollView)
-
     title = "Avatar"
     guard let navigationBar = navigationController?.navigationBar else { return }
     navigationBar.prefersLargeTitles = true
@@ -40,7 +40,6 @@ final class ViewController: UIViewController {
       scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
       scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
     ])
-
   }
 
   override func viewDidLayoutSubviews() {
@@ -48,24 +47,24 @@ final class ViewController: UIViewController {
     guard let UINavigationBarLargeTitleView = NSClassFromString("_UINavigationBarLargeTitleView") else { return }
 
     navigationBar.subviews.forEach { subview in
-                    if subview.isKind(of: UINavigationBarLargeTitleView.self) {
+      if subview.isKind(of: UINavigationBarLargeTitleView.self) {
 
-                      subview.addSubview(imageView)
+        subview.addSubview(imageView)
 
-                        NSLayoutConstraint.activate([
-                          imageView.bottomAnchor.constraint(
-                                equalTo: subview.bottomAnchor,
-                                constant: -15
-                            ),
-                          imageView.trailingAnchor.constraint(
-                                equalTo: subview.trailingAnchor,
-                                constant: -view.directionalLayoutMargins.trailing
-                            ),
-                          imageView.widthAnchor.constraint(equalToConstant: 36),
-                          imageView.heightAnchor.constraint(equalToConstant: 36)
-                        ])
-                    }
-                }
+        NSLayoutConstraint.activate([
+          imageView.bottomAnchor.constraint(
+            equalTo: subview.bottomAnchor,
+            constant: -15
+          ),
+          imageView.trailingAnchor.constraint(
+            equalTo: subview.trailingAnchor,
+            constant: -view.directionalLayoutMargins.trailing
+          ),
+          imageView.widthAnchor.constraint(equalToConstant: 36),
+          imageView.heightAnchor.constraint(equalToConstant: 36)
+        ])
+      }
+    }
 
   }
 }
